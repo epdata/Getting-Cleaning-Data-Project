@@ -59,11 +59,16 @@ subdataFeaturesNames<-dataFeaturesNames$V2[grep("mean\\(\\)|std\\(\\)", dataFeat
 ##Subset the data frame Data by seleted names of Features
 selectedNames<-c(as.character(subdataFeaturesNames), "subject", "activity" )
 Data<-subset(Data,select=selectedNames)
+colnames(Data) <- tolower(colnames(Data))
 
 ##Uses descriptive activity names to name the activities in the data set
 ##Read descriptive activity names from "activity_labels.txt"
-activityLabels <- read.table(file.path(path_rf, "activity_labels.txt"),header = FALSE)
-
+activityLabels = read.table(file.path(path_rf, "activity_labels.txt"), sep="", header=FALSE)
+currentActivity = 1
+for (currentActivityLabel in activityLabels$V2) {
+    Data$activity <- gsub(currentActivity, currentActivityLabel, Data$activity)
+    currentActivity <- currentActivity + 1
+}
 ##Appropriately labels the data set with descriptive variable names
 ##In the former part, variables activity and subject and names of the activities have been labelled using descriptive names.
 ##In this part, Names of Feteatures will labelled using descriptive variable names.
